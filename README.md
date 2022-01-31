@@ -1,1 +1,1 @@
-# Simple react word game# ReactWordGame
+# ReactWordGame

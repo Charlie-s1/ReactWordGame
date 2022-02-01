@@ -8,9 +8,26 @@ function Letter(props){
     )
 }
 
+let wordToGuess;
+async function getWords(){
+    const wordListRaw = await fetch("words.json");
+    const wordList = await wordListRaw.json();
+    wordToGuess = wordList[Math.floor(Math.random()*wordList.length)];
+    return wordToGuess;
+}
+
 class Board extends React.Component {
+    renderRow(start,end){
+        let toReturn = [];
+        for(let i=start; i<end; i++){
+            toReturn.push(this.renderLetter(i));
+            // return(this.renderLetter(0),this.renderLetter(1));
+        }
+        return(toReturn)
+    }
     renderLetter(i){
         return(<Letter
+            key={i}
             value={this.props.letters[i]}
             state={this.props.letterState[i]}
         />)
@@ -18,56 +35,54 @@ class Board extends React.Component {
     render(){
         return(
             <div id="gameBoard">
+                
                 <div className="guessRow">
-                    {this.renderLetter(0)}
-                    {this.renderLetter(1)}
-                    {this.renderLetter(2)}
-                    {this.renderLetter(3)}
-                    {this.renderLetter(4)}
+                    {this.renderRow(0,this.props.wordLength)}
                 </div>
                 <div className="guessRow">
-                    {this.renderLetter(5)}
-                    {this.renderLetter(6)}
-                    {this.renderLetter(7)}
-                    {this.renderLetter(8)}
-                    {this.renderLetter(9)}
+                    {this.renderRow(this.props.wordLength,this.props.wordLength*2)}
                 </div>
                 <div className="guessRow">
-                    {this.renderLetter(10)}
-                    {this.renderLetter(11)}
-                    {this.renderLetter(12)}
-                    {this.renderLetter(13)}
-                    {this.renderLetter(14)}
+                    {this.renderRow(this.props.wordLength*2,this.props.wordLength*3)}
                 </div>
                 <div className="guessRow">
-                    {this.renderLetter(15)}
-                    {this.renderLetter(16)}
-                    {this.renderLetter(17)}
-                    {this.renderLetter(18)}
-                    {this.renderLetter(19)}
+                    {this.renderRow(this.props.wordLength*3,this.props.wordLength*4)}
                 </div>
                 <div className="guessRow">
-                    {this.renderLetter(20)}
-                    {this.renderLetter(21)}
-                    {this.renderLetter(22)}
-                    {this.renderLetter(23)}
-                    {this.renderLetter(24)}
+                    {this.renderRow(this.props.wordLength*4,this.props.wordLength*5)}
                 </div>
             </div>
         );
     }
 }
+
 class Game extends React.Component {
+    
     constructor(props){
         super(props);
         this.state = {
-            letters:Array(25).fill(null),
-            letterState:Array(25).fill(null),
+            letters:Array(0),
+            letterState:Array(0),
             pos:0,
             guessStart:0,
             guessEnd:5,
-            guessWord:"hello"
+            guessLength:0,
+            guessWord:""
         }
+        this.updateGuess();
+    }
+
+    async updateGuess(){
+        let word = await getWords();
+        this.state.guessWord = word;
+        this.state.guessLength = word.length;
+        this.state.guessEnd = word.length;
+        this.state.letters = Array(word.length*5).fill(null);
+        // this.state.letterState = Array(word.length*5).fill(null);
+        // this.setState({guessWord : word});
+        // this.setState({guessLength : word.length});
+        // this.setState({letters: Array(word.length*5).fill(null)});
+        this.setState({letterState : Array(word.length*5).fill(null)});
     }
     
     handleKey(e){
@@ -77,7 +92,6 @@ class Game extends React.Component {
         
         if(e.key=="Enter"){
             document.querySelector("#input").value="";
-
             const userGuess = currentLetters.slice(this.state.guessStart,this.state.guessEnd)
             const toGuess = this.state.guessWord.split("");
             let count = 0;
@@ -93,11 +107,10 @@ class Game extends React.Component {
                 
                 count++;
             }
-            console.log(this.state.letterState);
 
             this.state.pos=this.state.guessEnd;
-            this.state.guessStart+=5;
-            this.state.guessEnd+=5;   
+            this.state.guessStart+=this.state.guessLength;
+            this.state.guessEnd+=this.state.guessLength;  
         }
         if (e.key == "Backspace" && this.state.pos > this.state.guessStart){
             currentLetters[this.state.pos-1] = null;
@@ -111,14 +124,16 @@ class Game extends React.Component {
 
 
     }
-    render() {
+    
+    render() {     
         const curLetters = this.state.letters;
         const curLetterState = this.state.letterState;
         return(
-            <div>
+            <div id="game">
                 <Board
                     letters={curLetters}
                     letterState={curLetterState}
+                    wordLength={this.state.guessLength}
                 />
                 <input type="text" id="input" onKeyDown={(e) => this.handleKey(e)}></input>
             </div>
@@ -130,7 +145,7 @@ class Game extends React.Component {
  * 
  */
 ReactDOM.render(
-    <Game />,
+    <Game/>,
     document.getElementById('root')
 
 )

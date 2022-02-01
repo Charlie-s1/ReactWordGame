@@ -2,12 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+/**
+ * Create p that holds single letter of guess by user
+ */
 function Letter(props){
     return (
         <p className={`letterBox ${props.state}`}> {props.value} </p>
     )
 }
 
+/**
+ * get and return random word from list
+ */
 let wordToGuess;
 async function getWords(){
     const wordListRaw = await fetch("words.json");
@@ -16,12 +22,15 @@ async function getWords(){
     return wordToGuess;
 }
 
+/**
+ * create word board
+ * populate with enough boxes for 5 guesses of the random word
+ */
 class Board extends React.Component {
     renderRow(start,end){
         let toReturn = [];
         for(let i=start; i<end; i++){
             toReturn.push(this.renderLetter(i));
-            // return(this.renderLetter(0),this.renderLetter(1));
         }
         return(toReturn)
     }
@@ -56,6 +65,9 @@ class Board extends React.Component {
     }
 }
 
+/**
+ * create game
+ */
 class Game extends React.Component {
     
     constructor(props){
@@ -72,19 +84,24 @@ class Game extends React.Component {
         this.updateGuess();
     }
 
+    /**
+     * get new word and update board with enough boxes at setState
+     */
     async updateGuess(){
         let word = await getWords();
         this.state.guessWord = word;
         this.state.guessLength = word.length;
         this.state.guessEnd = word.length;
         this.state.letters = Array(word.length*5).fill(null);
-        // this.state.letterState = Array(word.length*5).fill(null);
-        // this.setState({guessWord : word});
-        // this.setState({guessLength : word.length});
-        // this.setState({letters: Array(word.length*5).fill(null)});
         this.setState({letterState : Array(word.length*5).fill(null)});
     }
     
+    /**
+     * handle user input
+     * on enter check each letter with random word selected
+     * on type update appropriate box with user input
+     * on delete delete newest input from box
+     */
     handleKey(e){
         const currentLetters = this.state.letters.slice();
         const curLetterState = this.state.letterState.slice();
@@ -124,7 +141,9 @@ class Game extends React.Component {
 
 
     }
-    
+    /**
+     * create game on site included user input box
+     */
     render() {     
         const curLetters = this.state.letters;
         const curLetterState = this.state.letterState;
@@ -142,7 +161,7 @@ class Game extends React.Component {
 }
 
 /**
- * 
+ * create site
  */
 ReactDOM.render(
     <Game/>,

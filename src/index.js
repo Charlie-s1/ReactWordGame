@@ -108,7 +108,7 @@ class Game extends React.Component {
         const curLetterState = this.state.letterState.slice();
         let curpos = this.state.pos;
         
-        if(e.key=="Enter"){
+        if(e.key==="Enter"){
             document.querySelector("#input").value="";
             
             const userGuessRaw = currentLetters.slice(this.state.guessStart,this.state.guessEnd)
@@ -118,11 +118,10 @@ class Game extends React.Component {
                 }
                 return i.toLowerCase();
             });
-            console.log(userGuess);
             const toGuess = this.state.guessWord.split("");
             let count = 0;
             for(const i of userGuess){
-                if (userGuess[count] == toGuess[count]) {
+                if (userGuess[count] === toGuess[count]) {
                     curLetterState[count+this.state.guessStart] = "same";                  
                 }
                 else if(toGuess.includes(i)){ 
@@ -141,10 +140,10 @@ class Game extends React.Component {
             this.state.guessStart+=this.state.guessLength;
             this.state.guessEnd+=this.state.guessLength;  
         }
-        if (e.key == "Backspace" && this.state.pos > this.state.guessStart){
+        if (e.key === "Backspace" && this.state.pos > this.state.guessStart){
             currentLetters[this.state.pos-1] = null;
             this.state.pos--;
-        }else if(this.state.pos<this.state.guessEnd && e.key!="Backspace" &&e.key!="Enter"){
+        }else if(this.state.pos<this.state.guessEnd && e.key!=="Backspace" &&e.key!=="Enter"){
             currentLetters[curpos] = e.key;
             this.state.pos++;
         }
@@ -159,7 +158,6 @@ class Game extends React.Component {
     render() {    
         const curLetters = this.state.letters;
         const curLetterState = this.state.letterState;
-        console.log(this.state.pos);
         let answer = this.state.finish ? 
             `Answer: ${this.state.guessWord}` : 
             "";

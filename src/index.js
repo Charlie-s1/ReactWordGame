@@ -76,10 +76,11 @@ class Game extends React.Component {
             letters:Array(0),
             letterState:Array(0),
             pos:0,
+            finish:false,
             guessStart:0,
             guessEnd:5,
             guessLength:0,
-            guessWord:""
+            guessWord:"",
         }
         this.updateGuess();
     }
@@ -109,7 +110,15 @@ class Game extends React.Component {
         
         if(e.key=="Enter"){
             document.querySelector("#input").value="";
-            const userGuess = currentLetters.slice(this.state.guessStart,this.state.guessEnd)
+            
+            const userGuessRaw = currentLetters.slice(this.state.guessStart,this.state.guessEnd)
+            const userGuess = userGuessRaw.map(i => {
+                if(i==null){
+                    return;
+                }
+                return i.toLowerCase();
+            });
+            console.log(userGuess);
             const toGuess = this.state.guessWord.split("");
             let count = 0;
             for(const i of userGuess){
@@ -126,6 +135,9 @@ class Game extends React.Component {
             }
 
             this.state.pos=this.state.guessEnd;
+            if(this.state.pos >= this.state.letters.length){
+                this.state.finish = true;
+            }
             this.state.guessStart+=this.state.guessLength;
             this.state.guessEnd+=this.state.guessLength;  
         }
@@ -136,17 +148,21 @@ class Game extends React.Component {
             currentLetters[curpos] = e.key;
             this.state.pos++;
         }
-        this.setState({letterState : curLetterState});
+        this.state.letterState = curLetterState;
         this.setState({ letters : currentLetters});
-
-
     }
+    
+
     /**
      * create game on site included user input box
      */
-    render() {     
+    render() {    
         const curLetters = this.state.letters;
         const curLetterState = this.state.letterState;
+        console.log(this.state.pos);
+        let answer = this.state.finish ? 
+            `Answer: ${this.state.guessWord}` : 
+            "";
         return(
             <div id="game">
                 <Board
@@ -154,6 +170,7 @@ class Game extends React.Component {
                     letterState={curLetterState}
                     wordLength={this.state.guessLength}
                 />
+                <p>{answer}</p>
                 <input type="text" id="input" onKeyDown={(e) => this.handleKey(e)}></input>
             </div>
         )

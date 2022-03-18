@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/ReactWordGame/static/css/main.b6955480.css",
+    "main.js": "/ReactWordGame/static/js/main.6191f9ce.js",
+    "index.html": "/ReactWordGame/index.html",
+    "main.b6955480.css.map": "/ReactWordGame/static/css/main.b6955480.css.map",
+    "main.6191f9ce.js.map": "/ReactWordGame/static/js/main.6191f9ce.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b6955480.css",
+    "static/js/main.6191f9ce.js"
+  ]
+}

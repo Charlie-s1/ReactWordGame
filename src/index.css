@@ -24,6 +24,29 @@ body{
     display: grid;
     grid-gap: .5rem;
 }
+#keyboard{
+    color: white;
+    width:50vw;
+    margin-top: 2rem;
+}
+#keyboard>div{
+    font-family: sans-serif;
+    display:flex;
+    height:3rem;
+    justify-content: space-evenly;
+    align-items: center;
+}
+#keyboard>div>p{
+    user-select: none;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border:1px solid #252d31;
+    border-radius: 1rem;
+    width:2.5rem;
+    height:2.5rem;
+}
 #input{
     position: realtive;
     margin-top:2rem;
@@ -32,7 +55,7 @@ body{
     width: 100%;
     background: none;
     color: white;
-    border: #252d31 1px solid;
+    border: #252d31 5px solid;
     transition: 1s;
     text-align: center;
 }
@@ -65,4 +88,10 @@ body{
 }
 .none{
     background: #252d31;
+}
+@media (max-width:700px){
+    #keyboard{
+        position:sticky;
+        width:90vw;
+    }
 }

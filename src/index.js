@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {words} from './words.js';
 import './index.css';
 
 /**
@@ -15,10 +16,8 @@ function Letter(props){
  * get and return random word from list
  */
 let wordToGuess;
-async function getWords(){
-    const wordListRaw = await fetch("words.json");
-    const wordList = await wordListRaw.json();
-    wordToGuess = wordList[Math.floor(Math.random()*wordList.length)];
+async function getWord(){
+    wordToGuess = words[Math.floor(Math.random()*words.length)];
     return wordToGuess;
 }
 
@@ -66,6 +65,41 @@ class Board extends React.Component {
 }
 
 /**
+ * create virtual keyboard
+ */
+function KeyBoard(props){
+    const order = [
+        ['q','w','e','r','t','y','u','i','o','p'],
+        ['a','s','d','f','g','h','j','k','l'],
+        ['Del','z','x','c','v','b','n','m','Enter']
+    ]
+    function createRow(list){
+        let toReturn=[];
+        for (let i of list){
+            toReturn.push(
+            <Key
+                key={i}
+                value={i}
+                handleClick={(e)=>props.handleClick(e)}
+            />);
+        } 
+        return toReturn;
+    }
+    return(
+        <div id="keyboard">
+            <div>{createRow(order[0])}</div>
+            <div>{createRow(order[1])}</div>
+            <div>{createRow(order[2])}</div>
+        </div>
+    )
+}
+function Key(props){
+    return(
+        <p id={props.value.toLowerCase()} onClick={(e)=>props.handleClick(e)}>{props.value}</p>
+    )
+}
+
+/**
  * create game
  */
 class Game extends React.Component {
@@ -89,27 +123,31 @@ class Game extends React.Component {
      * get new word and update board with enough boxes at setState
      */
     async updateGuess(){
-        let word = await getWords();
+        let word = await getWord();
         this.state.guessWord = word;
         this.state.guessLength = word.length;
         this.state.guessEnd = word.length;
         this.state.letters = Array(word.length*5).fill(null);
         this.setState({letterState : Array(word.length*5).fill(null)});
     }
-    
+
     /**
      * handle user input
      * on enter check each letter with random word selected
      * on type update appropriate box with user input
      * on delete delete newest input from box
      */
+    handleClick(e){
+        console.log(e);
+    }
     handleKey(e){
         const currentLetters = this.state.letters.slice();
         const curLetterState = this.state.letterState.slice();
         let curpos = this.state.pos;
-        
-        if(e.key==="Enter"){
-            document.querySelector("#input").value="";
+
+
+        if(e.target.innerText==="Enter"){
+            // document.querySelector("#input").value="";
             
             const userGuessRaw = currentLetters.slice(this.state.guessStart,this.state.guessEnd)
             const userGuess = userGuessRaw.map(i => {
@@ -140,11 +178,11 @@ class Game extends React.Component {
             this.state.guessStart+=this.state.guessLength;
             this.state.guessEnd+=this.state.guessLength;  
         }
-        if (e.key === "Backspace" && this.state.pos > this.state.guessStart){
+        if (e.target.innerText === "Del" && this.state.pos > this.state.guessStart){
             currentLetters[this.state.pos-1] = null;
             this.state.pos--;
-        }else if(this.state.pos<this.state.guessEnd && e.key!=="Backspace" &&e.key!=="Enter"){
-            currentLetters[curpos] = e.key;
+        }else if(this.state.pos<this.state.guessEnd && e.target.innerText!=="Del" &&e.target.innerText!=="Enter"){
+            currentLetters[curpos] = e.target.innerText;
             this.state.pos++;
         }
         this.state.letterState = curLetterState;
@@ -169,7 +207,9 @@ class Game extends React.Component {
                     wordLength={this.state.guessLength}
                 />
                 <p>{answer}</p>
-                <input type="text" id="input" onKeyDown={(e) => this.handleKey(e)}></input>
+                {<KeyBoard
+                    handleClick={(e)=>this.handleKey(e)}
+                />}
             </div>
         )
     }
@@ -182,4 +222,7 @@ ReactDOM.render(
     <Game/>,
     document.getElementById('root')
 
-)
+);
+document.body.addEventListener('keydown',(e)=>{
+    document.querySelector(`#${e.key=="Backspace" ? "del" : e.key.toLowerCase()}`).click();
+})

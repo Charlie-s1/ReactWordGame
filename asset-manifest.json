@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/ReactWordGame/static/css/main.b6955480.css",
-    "main.js": "/ReactWordGame/static/js/main.6191f9ce.js",
+    "main.css": "/ReactWordGame/static/css/main.58872be0.css",
+    "main.js": "/ReactWordGame/static/js/main.cc777463.js",
     "index.html": "/ReactWordGame/index.html",
-    "main.b6955480.css.map": "/ReactWordGame/static/css/main.b6955480.css.map",
-    "main.6191f9ce.js.map": "/ReactWordGame/static/js/main.6191f9ce.js.map"
+    "main.58872be0.css.map": "/ReactWordGame/static/css/main.58872be0.css.map",
+    "main.cc777463.js.map": "/ReactWordGame/static/js/main.cc777463.js.map"
   },
   "entrypoints": [
-    "static/css/main.b6955480.css",
-    "static/js/main.6191f9ce.js"
+    "static/css/main.58872be0.css",
+    "static/js/main.cc777463.js"
   ]
 }
